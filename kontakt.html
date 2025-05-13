@@ -1,4 +1,4 @@
-<!DOCTYPE html><!--  This site was created in Webflow. https://webflow.com  --><!--  Last Published: Tue May 13 2025 05:08:16 GMT+0000 (Coordinated Universal Time)  -->
+<!DOCTYPE html><!--  This site was created in Webflow. https://webflow.com  --><!--  Last Published: Tue May 13 2025 10:35:14 GMT+0000 (Coordinated Universal Time)  -->
 <html data-wf-page="67f4bf43d7976b1f77b98077" data-wf-site="67f4be0297e5513f8eef8cc1">
 <head>
   <meta charset="utf-8">
@@ -353,10 +353,7 @@ margin: 0rem !important;
                     </div>
                   </div>
                   <div id="contact-form" class="contact_form-block w-form">
-                    <form id="wf-form-contact-form-2" name="wf-form-contact-form-2" data-name="contact-form" method="POST" class="contact_form" data-netlify="true" netlify-honeypot="bot-field">
-                      <input type="hidden" name="form-name" value="contact-form" />
-                      <input type="hidden" name="bot-field" />
-
+                    <form id="formularz-kontaktowy" name="wf-form-contact-form-2" data-name="contact-form" method="get" class="contact_form" data-wf-page-id="67f4bf43d7976b1f77b98077" data-wf-element-id="38a74627-8450-d98c-10aa-7854922eef5f">
                       <div class="form_field-2col">
                         <div class="form_field-wrapper"><label for="Contact-First-Name" class="form_field-label">Imię</label><input class="form_input w-input" maxlength="256" name="Contact-First-Name" data-name="Contact First Name" placeholder="" type="text" id="Contact-First-Name" required=""></div>
                         <div class="form_field-wrapper"><label for="Contact-Last-Name" class="form_field-label">Nazwisko</label><input class="form_input w-input" maxlength="256" name="Contact-Last-Name" data-name="Contact Last Name" placeholder="" type="text" id="Contact-Last-Name" required=""></div>
@@ -367,11 +364,10 @@ margin: 0rem !important;
                       </div>
                       <div class="form_field-wrapper"><label for="Message" class="form_field-label">Wiadomość</label><textarea id="Message" name="Message" maxlength="5000" data-name="Message" placeholder="" required="" class="form_input is-text-area w-input"></textarea></div>
                       <div class="margin-bottom margin-xsmall"><label id="Contact-6-Checkbox" class="w-checkbox form_checkbox">
-                          <div class="w-checkbox-input w-checkbox-input--inputType-custom form_checkbox-icon"></div><input type="checkbox" name="Contact-6-Checkbox" id="Contact 6 Checkbox" data-name="Contact 6 Checkbox" required="" style="opacity:0;position:absolute;z-index:-1"><span for="Contact-6-Checkbox" class="form_checkbox-label w-form-label">Akceptuję </span>
+                          <div class="w-checkbox-input w-checkbox-input--inputType-custom form_checkbox-icon"></div><input type="checkbox" name="Contact-Checkbox" id="Contact-Checkbox" data-name="Contact Checkbox" required="" style="opacity:0;position:absolute;z-index:-1"><span for="Contact-Checkbox" class="form_checkbox-label w-form-label">Akceptuję </span>
                           <div class="word_break"></div>
                           <a href="regulamin.html" target="_blank">Regulamin</a>
-                        </label></div>
-                      <input type="submit" data-wait="Please wait..." id="w-node-_38a74627-8450-d98c-10aa-7854922eef9d-77b98077" class="button is-alternate w-button" value="Wyślij">
+                        </label></div><input type="submit" data-wait="Please wait..." id="w-node-_38a74627-8450-d98c-10aa-7854922eef9d-77b98077" class="button is-alternate w-button" value="Wyślij">
                     </form>
                     <div class="form_message-success-wrapper w-form-done">
                       <div class="form_message-success">
@@ -382,15 +378,6 @@ margin: 0rem !important;
                       <div class="form_message-error">
                         <div class="error-text">Ups! Coś poszło nie tak podczas wysyłania.</div>
                       </div>
-                    </div>
-                    <!-- Debug tools (remove for production) -->
-                    <div style="margin-top: 20px; display: none" id="debug-tools">
-                      <button type="button" id="debug-show-error" style="background: #f44336; color: white; padding: 8px 16px; border: none; cursor: pointer; margin-right: 10px;">
-                        Pokaż komunikat błędu
-                      </button>
-                      <button type="button" id="debug-hide-error" style="background: #4CAF50; color: white; padding: 8px 16px; border: none; cursor: pointer;">
-                        Ukryj komunikat błędu
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -760,60 +747,5 @@ margin: 0rem !important;
   <script src="js/webflow.js" type="text/javascript"></script><!--  Google Tag Manager (noscript)  -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T3D8DVP6" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!--  End Google Tag Manager (noscript)  -->
-  
-  <!-- Form validation script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const contactForm = document.getElementById('wf-form-contact-form-2');
-      const errorWrapper = document.querySelector('.form_message-error-wrapper');
-      const errorText = document.querySelector('.error-text');
-      
-      if (contactForm) {
-        contactForm.addEventListener('submit', function(event) {
-          console.log('Form submission attempt');
-          
-          // Create FormData object to inspect all form values
-          const formData = new FormData(contactForm);
-          const formValues = {};
-          formData.forEach((value, key) => {
-            formValues[key] = value;
-          });
-          console.log('Form data being submitted:', formValues);
-        });
-      } else {
-        console.warn('Contact form not found in the DOM');
-      }
-      
-      // Monitor XHR requests for form submissions
-      const originalXhrSend = XMLHttpRequest.prototype.send;
-      XMLHttpRequest.prototype.send = function() {
-        this.addEventListener('load', function() {
-          try {
-            console.log('XHR response:', {
-              status: this.status,
-              statusText: this.statusText,
-              responseURL: this.responseURL
-            });
-            
-            if (this.status >= 400) {
-              console.error('XHR request failed with status', this.status);
-              errorText.textContent = `Błąd podczas wysyłania (${this.status}). Prosimy spróbować później.`;
-              errorWrapper.style.display = 'block';
-            }
-          } catch (error) {
-            console.error('Error logging XHR response:', error);
-          }
-        });
-        
-        this.addEventListener('error', function(error) {
-          console.error('XHR request error:', error);
-          errorText.textContent = 'Błąd połączenia. Sprawdź swoje połączenie internetowe i spróbuj ponownie.';
-          errorWrapper.style.display = 'block';
-        });
-        
-        originalXhrSend.apply(this, arguments);
-      };
-    });
-  </script>
 </body>
 </html>

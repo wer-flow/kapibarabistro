@@ -142,10 +142,6 @@
   border-color: #3898ec;
 }
 
-.w-form-formrecaptcha {
-  margin-bottom: 8px;
-}
-
 body {
   background-color: var(--color-scheme-1--background);
   font-family: var(--_typography---font-styles--body);
