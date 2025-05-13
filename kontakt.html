@@ -18,7 +18,7 @@
   <link href="css/normalize.css" rel="stylesheet" type="text/css">
   <link href="css/webflow.css" rel="stylesheet" type="text/css">
   <link href="css/kapibarabistro.webflow.css" rel="stylesheet" type="text/css">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
   <script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script>
   <link href="images/favicon.png" rel="shortcut icon" type="image/x-icon">
   <link href="images/webclip.png" rel="apple-touch-icon"><!--  Google Tag Manager  -->
@@ -371,7 +371,11 @@ margin: 0rem !important;
                           <div class="word_break"></div>
                           <a href="regulamin.html" target="_blank">Regulamin</a>
                         </label></div>
-                      <div data-netlify-recaptcha="true"></div>
+                      <div data-netlify-recaptcha="true" class="g-recaptcha" 
+                           data-sitekey="REPLACE_WITH_YOUR_SITE_KEY" 
+                           data-callback="recaptchaCallback"
+                           data-expired-callback="recaptchaExpiredCallback"
+                           data-error-callback="recaptchaErrorCallback"></div>
                       <input type="submit" data-wait="Please wait..." id="w-node-_38a74627-8450-d98c-10aa-7854922eef9d-77b98077" class="button is-alternate w-button" value="Wyślij">
                     </form>
                     <div class="form_message-success-wrapper w-form-done">
@@ -383,6 +387,15 @@ margin: 0rem !important;
                       <div class="form_message-error">
                         <div class="error-text">Ups! Coś poszło nie tak podczas wysyłania.</div>
                       </div>
+                    </div>
+                    <!-- Debug tools (remove for production) -->
+                    <div style="margin-top: 20px; display: none" id="debug-tools">
+                      <button type="button" id="debug-show-error" style="background: #f44336; color: white; padding: 8px 16px; border: none; cursor: pointer; margin-right: 10px;">
+                        Pokaż komunikat błędu
+                      </button>
+                      <button type="button" id="debug-hide-error" style="background: #4CAF50; color: white; padding: 8px 16px; border: none; cursor: pointer;">
+                        Ukryj komunikat błędu
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -752,5 +765,169 @@ margin: 0rem !important;
   <script src="js/webflow.js" type="text/javascript"></script><!--  Google Tag Manager (noscript)  -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T3D8DVP6" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!--  End Google Tag Manager (noscript)  -->
+  
+  <!-- Form validation and error logging script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const contactForm = document.getElementById('wf-form-contact-form-2');
+      const errorWrapper = document.querySelector('.form_message-error-wrapper');
+      const errorText = document.querySelector('.error-text');
+      const debugTools = document.getElementById('debug-tools');
+      const debugShowError = document.getElementById('debug-show-error');
+      const debugHideError = document.getElementById('debug-hide-error');
+      
+      // Enable debug tools with a keyboard shortcut (Ctrl+Shift+D)
+      document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+          debugTools.style.display = debugTools.style.display === 'none' ? 'block' : 'none';
+          console.log('Debug tools toggled:', debugTools.style.display);
+        }
+      });
+      
+      // Debug buttons functionality
+      if (debugShowError) {
+        debugShowError.addEventListener('click', function() {
+          errorWrapper.style.display = 'block';
+          errorText.textContent = 'Test error message - Debug mode';
+          console.log('Error message manually displayed for testing');
+        });
+      }
+      
+      if (debugHideError) {
+        debugHideError.addEventListener('click', function() {
+          errorWrapper.style.display = 'none';
+          console.log('Error message manually hidden');
+        });
+      }
+      
+      // reCAPTCHA callback handlers
+      window.recaptchaCallback = function() {
+        console.log('reCAPTCHA verification successful');
+      };
+      
+      window.recaptchaExpiredCallback = function() {
+        console.log('reCAPTCHA verification expired');
+        errorText.textContent = 'Weryfikacja reCAPTCHA wygasła. Proszę spróbować ponownie.';
+        errorWrapper.style.display = 'block';
+      };
+      
+      window.recaptchaErrorCallback = function() {
+        console.error('reCAPTCHA error occurred');
+        errorText.textContent = 'Błąd weryfikacji reCAPTCHA. Proszę odświeżyć stronę i spróbować ponownie.';
+        errorWrapper.style.display = 'block';
+      };
+      
+      if (contactForm) {
+        // Debug form attributes
+        console.log('Form configuration:', {
+          'has-netlify-attr': contactForm.hasAttribute('data-netlify'),
+          'netlify-value': contactForm.getAttribute('data-netlify'),
+          'has-recaptcha': contactForm.hasAttribute('data-netlify-recaptcha'),
+          'recaptcha-value': contactForm.getAttribute('data-netlify-recaptcha'),
+          'has-honeypot': contactForm.hasAttribute('netlify-honeypot'),
+          'honeypot-value': contactForm.getAttribute('netlify-honeypot'),
+          'method': contactForm.getAttribute('method'),
+          'name': contactForm.getAttribute('name'),
+          'action': contactForm.getAttribute('action') || 'Not set'
+        });
+        
+        // Check if hidden form-name input exists
+        const hiddenInput = contactForm.querySelector('input[name="form-name"]');
+        console.log('Hidden form-name input:', hiddenInput ? 'Exists' : 'Missing', 
+                    hiddenInput ? `Value: ${hiddenInput.value}` : '');
+                    
+        contactForm.addEventListener('submit', function(event) {
+          // Log when the form is submitted
+          console.log('Form submission attempt');
+          
+          // Check if reCAPTCHA exists and is verified
+          const recaptchaResponse = grecaptcha && grecaptcha.getResponse ? grecaptcha.getResponse() : null;
+          console.log('reCAPTCHA response:', recaptchaResponse ? 'Present' : 'Missing or empty');
+          
+          if (!recaptchaResponse && contactForm.hasAttribute('data-netlify-recaptcha')) {
+            console.warn('reCAPTCHA not completed but required by form');
+            // Don't stop submission - let Netlify handle this
+          }
+          
+          // Create FormData object to inspect all form values
+          const formData = new FormData(contactForm);
+          const formValues = {};
+          formData.forEach((value, key) => {
+            formValues[key] = value;
+          });
+          console.log('Form data being submitted:', formValues);
+          
+          // Adding event listener for when form submission fails
+          contactForm.addEventListener('weebly:fail', function(e) {
+            console.error('Form submission failed:', e);
+            // More detailed logging of the error
+            if (e.detail && e.detail.error) {
+              console.error('Error details:', e.detail.error);
+            }
+            
+            // Customize error message based on error type if available
+            if (e.detail && e.detail.errorType) {
+              switch(e.detail.errorType) {
+                case 'recaptcha':
+                  errorText.textContent = 'Weryfikacja reCAPTCHA nie powiodła się. Spróbuj ponownie.';
+                  break;
+                case 'validation':
+                  errorText.textContent = 'Proszę poprawnie wypełnić wszystkie wymagane pola.';
+                  break;
+                case 'server':
+                  errorText.textContent = 'Wystąpił błąd serwera. Prosimy spróbować później lub skontaktować się telefonicznie.';
+                  break;
+                default:
+                  errorText.textContent = 'Ups! Coś poszło nie tak podczas wysyłania. Spróbuj ponownie.';
+              }
+            }
+            
+            // Make error more visible in console
+            console.trace('Form submission error trace:');
+          });
+        });
+      } else {
+        console.warn('Contact form not found in the DOM');
+      }
+      
+      // Log any Netlify form errors
+      window.addEventListener('error', function(e) {
+        if (e.target && (e.target.action || e.target.method)) {
+          console.error('Form error event:', e);
+        }
+      }, true);
+      
+      // Monitor XHR requests for Netlify form submissions
+      const originalXhrSend = XMLHttpRequest.prototype.send;
+      XMLHttpRequest.prototype.send = function() {
+        this.addEventListener('load', function() {
+          try {
+            console.log('XHR response:', {
+              status: this.status,
+              statusText: this.statusText,
+              responseURL: this.responseURL,
+              response: this.response && this.response.length < 1000 ? this.response : 'Response too large to log'
+            });
+            
+            if (this.status >= 400) {
+              console.error('XHR request failed with status', this.status);
+              errorText.textContent = `Błąd podczas wysyłania (${this.status}). Prosimy spróbować później.`;
+              errorWrapper.style.display = 'block';
+            }
+          } catch (error) {
+            console.error('Error logging XHR response:', error);
+          }
+        });
+        
+        this.addEventListener('error', function(error) {
+          console.error('XHR request error:', error);
+          errorText.textContent = 'Błąd połączenia. Sprawdź swoje połączenie internetowe i spróbuj ponownie.';
+          errorWrapper.style.display = 'block';
+        });
+        
+        originalXhrSend.apply(this, arguments);
+      };
+    });
+  </script>
 </body>
 </html>
