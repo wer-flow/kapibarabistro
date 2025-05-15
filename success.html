@@ -24,6 +24,34 @@
       border-color: #fff;
     }
   </style>
+  <!-- Cookie Consent & Consent Mode -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    // Set default consent to 'denied' as a placeholder
+    if(localStorage.getItem('consentMode') === null){
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied',
+        'personalization_storage': 'denied',
+        'security_storage': 'denied',
+        'functionality_storage': 'denied',
+      });
+      gtag('set', 'ads_data_redaction', false);
+    } else {
+      gtag('consent', 'default', JSON.parse(localStorage.getItem('consentMode')));
+    }
+  </script>
+  <!-- Google Analytics 4 (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9E0L8HCYDB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9E0L8HCYDB');
+  </script>
 </head>
 <body>
   <div class="page-wrapper navbar-on-page">
